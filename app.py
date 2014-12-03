@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    Simple sockjs-tornado chat application. By default will listen on port 8080.
+    Simple sockjs-tornado chat application. By default will listen on port 8080 (for local use).
 """
 import tornado.ioloop
 import tornado.web
@@ -8,8 +8,6 @@ import tornado.web
 import sockjs.tornado
 
 import os
-
-
 
 class IndexHandler(tornado.web.RequestHandler):
     """Handler to serve the master presentation"""
@@ -60,8 +58,8 @@ if __name__ == "__main__":
 			static_path = os.path.join(os.path.dirname(__file__), 'static'),
     )
 
-    # 3. Make Tornado app listen on port 8080
-    app.listen(8080)
+    # 3. Make Tornado app listen on os.environ.PORT if used on Heroku, otherwise on port 8080
+    app.listen(os.environ.get('PORT', 8080))
 
     # 4. Start IOLoop
     tornado.ioloop.IOLoop.instance().start()

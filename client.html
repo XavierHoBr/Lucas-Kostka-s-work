@@ -41,7 +41,7 @@
       function connect() {
         disconnect();
 
-        conn = new SockJS('http://' + window.location.host + '/presentation', 'websocket');
+        conn = new SockJS('ws://' + window.location.host + '/presentation', 'websocket');
 
         conn.onopen = function(e) {
 						console.log('Someone joined the presentation');

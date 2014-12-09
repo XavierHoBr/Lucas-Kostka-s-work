@@ -65,6 +65,12 @@ be activated, it won't work otherwise. Go step 2 in case of troubles) :
   You can also test to control your presentation from your mobile and see real-time updates on your laptop for instance.
   That is what I used for this presentation and it was really cool ! 
   
+
+EXAMPLE : 
+
+	If you want to see it in action before playing with it, just go to welovemarketresearch.herokuapp.com and welovemarketresearch.herokuapp.com/client in another browser tab, window or device. Every change on welovemarketresearch.herokuapp.com will be repercuted on welovemarketresearch.herokuapp.com/client 
+
+
   TROUBLESHOOTING : do not hesitate to report any bugs or difficulties on Github or to send me an email. 
   
   Hoping you could have some fun with it, Cheers ! 

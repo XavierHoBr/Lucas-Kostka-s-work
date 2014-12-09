@@ -68,7 +68,7 @@ be activated, it won't work otherwise. Go step 2 in case of troubles) :
 
 EXAMPLE : 
 
-	If you want to see it in action before playing with it, just go to welovemarketresearch.herokuapp.com and welovemarketresearch.herokuapp.com/client in another browser tab, window or device. Every change on welovemarketresearch.herokuapp.com will be repercuted on welovemarketresearch.herokuapp.com/client 
+If you want to see it in action before playing with it, just go to http://welovemarketresearch.herokuapp.com and http://welovemarketresearch.herokuapp.com/client in another browser tab, window or device. Every change on welovemarketresearch.herokuapp.com will be repercuted on welovemarketresearch.herokuapp.com/client 
 
 
   TROUBLESHOOTING : do not hesitate to report any bugs or difficulties on Github or to send me an email. 

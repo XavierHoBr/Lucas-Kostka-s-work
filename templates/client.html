@@ -3,16 +3,8 @@
 <head>
 	<link rel="stylesheet" href="{{ static_url("css/reveal.min.css") }}" />
 	<link rel="stylesheet" href="{{ static_url("css/theme/default.css") }}" id="theme" />
-
 </head>
 <!-- Presentation wrapper -->
-<body>
-	<style>
-		.infos h3{
-				line-height: 1.0em;
-		}
-			
-	</style>
 	<div class="reveal">
 		<!-- Slides -->
 		<div class="slides">
@@ -97,70 +89,44 @@
 		</div>
 	</div>
 
+
 	<!-- Reveal Scripts -->
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
   	<script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js"></script>
-	<script src="{{ static_url("library/js/head.min.js") }}"></script>
+	<script src="{{ static_url("lib/js/head.min.js") }}"></script>
 	<script src="{{ static_url("js/reveal.min.js") }}"></script>
   	<script>
-    $(function() {
-
-
+    $(document).ready(function() {
 	  // SockJS connection
       var conn = null;
 	  
 	  // RevealJs initialization.
 	  Reveal.initialize({
-		history: true
+		controls: false, // To hide controls to clients. They can still move the slides if they want, but won't be tempted of doing so. 
 	  });
-
-		// A function here to notify server of slide change. RevealJs has its own event for that "slidechanged"
-		notifyServer = function(event){
-			data = {
-					indexv : Reveal.getIndices().v,
-		 			indexh : Reveal.getIndices().h,
-		 			indexf : Reveal.getIndices().f || 0
-			}
-		
-			// As Websocket only accept string we need to use JSON.stringify to convert our object
-    		conn.send(JSON.stringify(data));
-  		}
-	
-  		Reveal.addEventListener("slidechanged", notifyServer);
-  		Reveal.addEventListener("fragmentshown", notifyServer);
-  		Reveal.addEventListener("fragmenthidden", notifyServer);
-
-
       function connect() {
         disconnect();
-
         conn = new SockJS('https://' + window.location.host + '/presentation', 'websocket');
 
         conn.onopen = function(e) {
 			console.log('Someone joined the presentation');
         };
-
         conn.onmessage = function(e) {
-			// On recupere une string donc on la convertit en objet
 			response = JSON.parse(e.data);
 			Reveal.slide(response.indexh, response.indexv, response.indexf);
         };
-
         conn.onclose = function() {
           conn = null;
         };
       }
-
       function disconnect() {
         if (conn != null) {
           conn.close();
           conn = null;
         }
       }
-
-		// Connect when user has loaded the page
-		connect();		
-
+	  // Connect when user has loaded the page
+	  connect();		
 	});
 	</script>
 </body>

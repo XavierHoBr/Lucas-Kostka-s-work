@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="{{ static_url("css/reveal.min.css") }}" />
-	<link rel="stylesheet" href="{{ static_url("css/theme/default.css") }}" id="theme" />
+	<link rel="stylesheet" href="{{ static_url("css/reveal.css") }}" />
+	<link rel="stylesheet" href="{{ static_url("css/theme/black.css") }}" id="theme" />
 </head>
 <!-- Presentation wrapper -->
 	<div class="reveal">
@@ -94,35 +94,30 @@
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
   	<script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js"></script>
 	<script src="{{ static_url("lib/js/head.min.js") }}"></script>
-	<script src="{{ static_url("js/reveal.min.js") }}"></script>
+	<script src="{{ static_url("js/reveal.js") }}"></script>
   	<script>
     $(document).ready(function() {
-	  // SockJS connection
-      var conn = null;
-	  
 	  // RevealJs initialization.
 	  Reveal.initialize({
 		controls: false, // To hide controls to clients. They can still move the slides if they want, but won't be tempted of doing so. 
 	  });
       function connect() {
-        disconnect();
         conn = new SockJS('https://' + window.location.host + '/presentation', 'websocket');
 
         conn.onopen = function(e) {
-			console.log('Someone joined the presentation');
+			console.log('Client Joined');
         };
         conn.onmessage = function(e) {
 			response = JSON.parse(e.data);
 			Reveal.slide(response.indexh, response.indexv, response.indexf);
         };
         conn.onclose = function() {
-          conn = null;
+            disconnect();
         };
       }
       function disconnect() {
         if (conn != null) {
           conn.close();
-          conn = null;
         }
       }
 	  // Connect when user has loaded the page

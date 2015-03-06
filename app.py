@@ -19,6 +19,8 @@ import tornado.web
 import sockjs.tornado
 import os
 
+
+
 class IndexHandler(tornado.web.RequestHandler):
     """Handler to serve the master presentation
 		At the moment, there can be only one master 
@@ -35,25 +37,26 @@ class ClientHandler(tornado.web.RequestHandler):
 
 class ChatConnection(sockjs.tornado.SockJSConnection):
     """SockJS connection implementation. This
-		uses Tornado-SockJS plugin created by mrjoes, 
-		available here: https://github.com/mrjoes/sockjs-tornado"""
+	uses Tornado-SockJS plugin created by mrjoes, 
+	available here: https://github.com/mrjoes/sockjs-tornado"""
     # Class level variable
     participants = set()
 
+
     def on_open(self, info):
         # Send that someone joined, it will show in 
-				# browser console. The broadcast method here				
-				# is a useufl way to update all connected clients on
-				# event. It is proper to Tornado-SockJS lib. 
-        self.broadcast(self.participants, "Someone joined.")
+	# browser console. The broadcast method here				
+	# is a useufl way to update all connected clients on
+	# event. It is proper to Tornado-SockJS lib. 
 
         # Add client to the clients list
         self.participants.add(self)
 
     def on_message(self, message):
-				# While RevealJs listen on the event 'slidechanged', 
-				# I did not achieve implementing this custom event here, so instead
-				# Tornado-SockJS is listening on the traditionnal "on_message"
+	# While RevealJs listen on the event 'slidechanged', 
+	# I did not achieve implementing this custom event here, so instead
+	# Tornado-SockJS is listening on the traditionnal "on_message"
+
         self.broadcast(self.participants, message)
 
     def on_close(self):
@@ -64,10 +67,10 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
 if __name__ == "__main__":
     import logging
     logging.getLogger().setLevel(logging.DEBUG) # Comment these two lines in production
-    
-		# This is the endpoint where sockJS client will connect. 
-    ChatRouter = sockjs.tornado.SockJSRouter(ChatConnection, '/presentation')
 
+    
+    # This is the endpoint where sockJS client will connect. 
+    ChatRouter = sockjs.tornado.SockJSRouter(ChatConnection, '/presentation')
 
     # Our Tornado application routing
     app = tornado.web.Application([
@@ -79,8 +82,8 @@ if __name__ == "__main__":
 		template_path = os.path.join(os.path.dirname(__file__), 'templates'),
     )
 
-    # I pushed that app on Heroku, so it will try to listen on the "PORT" env varibale. 
-	# Otherwise and for local test, it will listen on port 8080. You can change it if you want. 
+    # I pushed that app on Heroku, so it will try to listen on the "PORT" env variable. 
+    # Otherwise and for local test, it will listen on port 8080. You can change it if you want. 
     app.listen(os.environ.get('PORT', 8080))
 
     # Finally start Tornado IOLoop.  

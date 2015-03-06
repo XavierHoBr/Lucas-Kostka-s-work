@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="{{ static_url("css/reveal.min.css") }}" />
-	<link rel="stylesheet" href="{{ static_url("css/theme/default.css") }}" id="theme" />
+	<link rel="stylesheet" href="{{ static_url("css/reveal.css") }}" />
+	<link rel="stylesheet" href="{{ static_url("css/theme/black.css") }}" id="theme" />
 
 </head>
 <!-- Presentation wrapper -->
@@ -95,58 +95,58 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js"></script>
 	<script src="{{ static_url("lib/js/head.min.js") }}"></script>
-	<script src="{{ static_url("js/reveal.min.js") }}"></script>
+	<script src="{{ static_url("js/reveal.js") }}"></script>
   	<script>
     $(document).ready(function() {
-	  	// SockJS connection
-      var conn = null;
-	  
 	  	// RevealJs initialization.
 	  	Reveal.initialize({
 	  	});
 
+      var serverFree = true;
+
 			// A function here to notify server of slide change. RevealJs has its own event for that "slidechanged"
 			notifyServer = function(event){
-			data = {
-					indexv : Reveal.getIndices().v, // Vertical Slide number
-		 			indexh : Reveal.getIndices().h, // Horizontal Slide number
-		 			indexf : Reveal.getIndices().f || 0 // Fragment index
-			}
+			  data = {
+					  indexv : Reveal.getIndices().v, // Vertical Slide number
+		 			  indexh : Reveal.getIndices().h, // Horizontal Slide number
+		 			  indexf : Reveal.getIndices().f || 0 // Fragment index
+			  }
 			// As Websocket only accept string we need to use JSON.stringify to convert our object
-    	conn.send(JSON.stringify(data));
-  		}
+        if (conn.readyState == SockJS.OPEN && serverFree) {
+    	      conn.send(JSON.stringify(data));
+            serverFree = false; // do not accept any more server response received and processed in onmessage. 
+        };
+      }
 			// We made things simple here, binding each RevealJS event to the same Callback "NotifyServer"
   		Reveal.addEventListener("slidechanged", notifyServer);
   		Reveal.addEventListener("fragmentshown", notifyServer);
   		Reveal.addEventListener("fragmenthidden", notifyServer);
 
-
       function connect() {
-        disconnect();
-
 				// The connexion is not really made on https, but other values (http, ws, wss) did not work
 				// on Heroku. I don't have a clue about it and will be eternally grateful to anyone willing
 				// to explain it to me.
         conn = new SockJS('https://' + window.location.host + '/presentation', 'websocket'); 
 
         conn.onopen = function(e) {
-					console.log('Someone joined the presentation'); // Initially to debug, but you can withdraw it.
+					console.log('Master joined'); // Initially to debug, but you can withdraw it.
         };
 
         conn.onmessage = function(e) {
-					response = JSON.parse(e.data); // Websockets use string encoding, so we need to convert that string to an object. 
-					Reveal.slide(response.indexh, response.indexv, response.indexf);
+					  response = JSON.parse(e.data); // Websockets use string encoding, so we need to convert that string to an object. 
+					  Reveal.slide(response.indexh, response.indexv, response.indexf);
+            console.log('Changement de la slide');
+            serverFree = true; // ready to accept new slidechanged event. 
         };
 
         conn.onclose = function() {
-          conn = null;
+          disconnect();
         };
-      }
+    };
 
       function disconnect() {
         if (conn != null) {
           conn.close();
-          conn = null;
         }
       }
 
